@@ -1,23 +1,20 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
+const taskRoutes = require('./routes/taskRoutes');
 
-dotenv.config();  // Load environment variables
+dotenv.config(); // Load .env variables
 
 const app = express();
-
-// Middleware
-app.use(express.json());  // Parse JSON bodies
-
-// Routes
-app.use('/api/users', userRoutes);
+app.use(express.json()); // Enable JSON body parsing
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('MongoDB Connected'))
-    .catch((error) => console.error('MongoDB connection error:', error));
+connectDB();
 
-// Start server
+// Use Routes
+app.use('/api/users', userRoutes);
+app.use('/api/tasks', taskRoutes);
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
